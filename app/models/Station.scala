@@ -1,38 +1,38 @@
 package models
 
-abstract class Station(var Name: String) {
-  var CurrentPassengers: Int
-  var Passengers: List[Passenger]
+abstract class Station(val Name: String) {
+  var InitTravelPassengers: List[Passenger]
+  var EndTravelPassengers: List[Passenger]
+
+  override def toString: String = s"$Name: Total ${InitTravelPassengers.length+EndTravelPassengers.length} passengers. In travel: ${InitTravelPassengers.length}. Ending travel: ${EndTravelPassengers.length}"
 
   def GetInPassengers(passengersIn: List[Passenger]): Int = {
-    Passengers = Passengers:::passengersIn
-    Passengers.length
+    EndTravelPassengers = EndTravelPassengers:::passengersIn
+    EndTravelPassengers.length
+  }
+
+  def GetOffPassengers(passengersIn: List[Passenger]): Int ={
+    //Se remueven los pasajeros de la lista de pasajeros de la estacion
+    this.InitTravelPassengers = InitTravelPassengers.filterNot(p => passengersIn.contains(p))
+    InitTravelPassengers.length
   }
 
   def GetOffPassengers(nameStation: String): List[Passenger] ={
     //Se filtran los pasajeros que tienen como Destino la estación actual
-    val getOffPassengers = Passengers.filter(p => p.Destination.Name equals(nameStation))
+    val getOffPassengers: List[Passenger] = InitTravelPassengers.filter(p => p.Destination equals nameStation)
     //Se remueven los pasajeros de la lista de pasajeros del carro
-    Passengers = Passengers.filterNot(p => getOffPassengers.contains(p))
+    this.InitTravelPassengers = InitTravelPassengers.filterNot(p => getOffPassengers.contains(p))
 
-    return getOffPassengers
+    getOffPassengers
   }
 }
 
-class MainHubSt(Name: String) extends Station(Name){
-  override var CurrentPassengers: Int = _
-  override var Passengers: List[Passenger] = _
-
-  override def GetInPassengers(passengersIn: List[Passenger]) = super.GetInPassengers(passengersIn)
-
-  override def GetOffPassengers(nameStation: String): List[Passenger] = super.GetOffPassengers(nameStation)
+case class MainHubSt(override val Name: String) extends Station(Name) {
+  override var InitTravelPassengers: List[Passenger] = Nil
+  override var EndTravelPassengers: List[Passenger] = Nil
 }
 
-class IntermediateSt(Name: String) extends Station(Name){
-  override var CurrentPassengers: Int = _
-  override var Passengers: List[Passenger] = _
-
-  override def GetInPassengers(passengersIn: List[Passenger]) = super.GetInPassengers(passengersIn)
-
-  override def GetOffPassengers(nameStation: String): List[Passenger] = super.GetOffPassengers(nameStation)
+case class IntermediateSt(override val Name: String) extends Station(Name){
+  override var InitTravelPassengers: List[Passenger] = Nil
+  override var EndTravelPassengers: List[Passenger] = Nil
 }

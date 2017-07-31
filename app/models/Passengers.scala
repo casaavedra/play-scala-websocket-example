@@ -1,14 +1,5 @@
 package models
 
-import java.time._
+import java.util.Date
 
-abstract class Passenger {
-  var Id:Int
-  var TimeOfEntrance: LocalDateTime
-  var Destination: Station
-
-}
-
-object Passenger {
-
-}
+case class Passenger(Id:Int, TimeOfEntrance: Date, Entrance: String, Destination: String)
